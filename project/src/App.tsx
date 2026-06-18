@@ -5,8 +5,8 @@ import {
 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 function App() {
@@ -15,7 +15,6 @@ function App() {
   const [contactData, setContactData] = useState({ name: '', email: '', phone: '', message: '' });
   const [contactStatus, setContactStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [email, setEmail] = useState('');
   const [videoModalOpen, setVideoModalOpen] = useState(false);
 
   useEffect(() => {
@@ -47,7 +46,9 @@ function App() {
       if (error) throw error;
       setContactStatus('success');
       setContactData({ name: '', email: '', phone: '', message: '' });
-    } catch { setContactStatus('error'); }
+    } catch { 
+      setContactStatus('error'); 
+    }
     setIsSubmitting(false);
   };
 
@@ -368,67 +369,38 @@ function App() {
               {contactStatus === 'error' && <div className="bg-red-500/20 border border-red-500/30 px-4 py-3 rounded-xl mb-4 sm:mb-6"><p className="text-red-400 text-sm">Something went wrong. Please try again.</p></div>}
               <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5">
                 <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Full Name *</label><input type="text" required value={contactData.name} onChange={e => setContactData({ ...contactData, name: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base" placeholder="Your name" /></div>
-                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Email *</label><input type="email" required value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base" placeholder="your@email.com" /></div>
-                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Phone</label><input type="tel" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base" placeholder="(555) 123-4567" /></div>
-                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Message</label><textarea value={contactData.message} onChange={e => setContactData({ ...contactData, message: e.target.value })} rows={4} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all resize-none text-sm sm:text-base" placeholder="Tell us about your fitness goals..." /></div>
-                <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 text-white py-3 sm:py-4 rounded-xl font-bold hover:from-cyan-600 hover:to-teal-600 transition-all disabled:opacity-50 shadow-xl shadow-cyan-500/20 text-sm sm:text-base">{isSubmitting ? 'Sending...' : 'Send Message'}</button>
+                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Email *</label><input type="email" required value={contactData.email} onChange={e => setContactData({ ...contactData, email: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base" placeholder="Your email" /></div>
+                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Phone Number</label><input type="tel" value={contactData.phone} onChange={e => setContactData({ ...contactData, phone: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base" placeholder="Your phone number" /></div>
+                <div><label className="block text-xs sm:text-sm font-medium text-slate-300 mb-1 sm:mb-2">Message *</label><textarea required rows={4} value={contactData.message} onChange={e => setContactData({ ...contactData, message: e.target.value })} className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 bg-slate-800/80 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all text-sm sm:text-base resize-none" placeholder="How can we help you?" /></div>
+                <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-cyan-400 to-teal-500 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold shadow-lg shadow-cyan-500/20 hover:from-cyan-500 hover:to-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base">{isSubmitting ? 'Sending...' : 'Send Message'}</button>
               </form>
-            </div>
-          </div>
-          <div className="mt-12 sm:mt-16 rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-700/50 h-64 sm:h-96 relative">
-            <img src="https://images.pexels.com/photos/258160/pexels-photo-258160.jpeg?auto=compress&w=1200" alt="Los Angeles city view" className="w-full h-full object-cover opacity-40" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <a href="https://www.google.com/maps/search/2450+Fitness+Ave+Los+Angeles+CA" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold hover:from-cyan-600 hover:to-teal-600 transition-all shadow-xl shadow-cyan-500/30 flex items-center gap-2 sm:gap-3 text-sm sm:text-base">
-                <MapPin className="w-4 sm:w-5 h-4 sm:h-5" /> Open in Google Maps
-              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800/50 py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4"><div className="bg-gradient-to-br from-cyan-400 to-teal-500 p-1.5 sm:p-2 rounded-lg sm:rounded-xl shadow-lg"><Dumbbell className="w-4 sm:w-5 h-4 sm:h-5 text-white" /></div><span className="text-lg sm:text-xl font-bold text-white">APEX<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-400">FITNESS</span></span></div>
-              <p className="text-slate-500 text-xs sm:text-sm mb-6">Transforming lives through fitness since 2012.</p>
-              <div className="flex gap-2 sm:gap-3">
-                <a href="#" className="bg-slate-800/50 p-2 sm:p-2.5 rounded-lg sm:rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-all border border-slate-700/50"><Facebook className="w-4 sm:w-5 h-4 sm:h-5" /></a>
-                <a href="#" className="bg-slate-800/50 p-2 sm:p-2.5 rounded-lg sm:rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-all border border-slate-700/50"><Instagram className="w-4 sm:w-5 h-4 sm:h-5" /></a>
-                <a href="#" className="bg-slate-800/50 p-2 sm:p-2.5 rounded-lg sm:rounded-xl text-slate-400 hover:text-cyan-400 hover:bg-slate-800 transition-all border border-slate-700/50"><Heart className="w-4 sm:w-5 h-4 sm:h-5" /></a>
-              </div>
+      {/* Footer Layout with Inline SVG Social Link */}
+      <footer className="bg-slate-950 border-t border-white/5 py-12 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-br from-cyan-400 to-teal-500 p-2 rounded-lg">
+              <Dumbbell className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h4 className="font-bold text-white mb-3 sm:mb-4 text-sm sm:text-base">Quick Links</h4>
-              <ul className="space-y-2 sm:space-y-3">{['About', 'Classes', 'Trainers', 'Pricing', 'Contact'].map(l => <li key={l}><button onClick={() => scrollToSection(l.toLowerCase())} className="text-slate-400 hover:text-cyan-400 transition-colors text-xs sm:text-sm">{l}</button></li>)}</ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-3 sm:mb-4 text-sm sm:text-base">Programs</h4>
-              <ul className="space-y-2 sm:space-y-3 text-slate-400 text-xs sm:text-sm">
-                <li className="hover:text-cyan-400 cursor-pointer transition-colors">Personal Training</li>
-                <li className="hover:text-cyan-400 cursor-pointer transition-colors">Group Fitness</li>
-                <li className="hover:text-cyan-400 cursor-pointer transition-colors">Nutrition Coaching</li>
-                <li className="hover:text-cyan-400 cursor-pointer transition-colors">Corporate Wellness</li>
-              </ul>
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <h4 className="font-bold text-white mb-3 sm:mb-4 text-sm sm:text-base">Newsletter</h4>
-              <p className="text-slate-400 text-xs sm:text-sm mb-3 sm:mb-4">Get fitness tips and exclusive offers.</p>
-              <form onSubmit={async (e) => { e.preventDefault(); if(supabase) { await supabase.from('newsletter_subscribers').insert([{ email }]); setEmail(''); }} } className="flex gap-2">
-                <input type="email" required placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)} className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm text-white focus:ring-2 focus:ring-cyan-500 outline-none" />
-                <button type="submit" className="bg-gradient-to-r from-cyan-500 to-teal-500 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl hover:from-cyan-600 hover:to-teal-600 transition-all"><Heart className="w-3 sm:w-4 h-3 sm:h-4 text-white" /></button>
-              </form>
-            </div>
+            <span className="text-xl font-bold text-white">APEX<span className="text-cyan-400">FITNESS</span></span>
           </div>
-          <div className="border-t border-slate-800/50 mt-8 sm:mt-12 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
-            <p className="text-slate-500 text-xs sm:text-sm">2024 Apex Fitness. All rights reserved.</p>
-            <div className="flex gap-4 sm:gap-6 text-slate-500 text-xs sm:text-sm">
-              <a href="#" className="hover:text-cyan-400 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-cyan-400 transition-colors">Terms of Service</a>
-            </div>
+          
+          {/* Social Icons Container with a hardcoded pure SVG Facebook icon */}
+          <div className="flex items-center gap-4">
+            <a href="#" aria-label="Facebook" className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400 transition-all">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+              </svg>
+            </a>
           </div>
+
+          <p className="text-slate-500 text-sm">
+            &copy; {new Date().getFullYear()} Apex Fitness. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
