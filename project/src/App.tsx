@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   Menu, X, MapPin, Phone, Clock, Users, Star,
-  Dumbbell, Heart, Zap, Target, Award, ArrowRight, Check, Sparkles, Play, XCircle
+  Dumbbell, Target, Award, ArrowRight, Check, Sparkles, Play, XCircle
 } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -42,7 +42,8 @@ function App() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('contacts').insert([{ ...contactData, status: 'new' }]);
+      // Modified to send pure form content to prevent column configuration rejection
+      const { error } = await supabase.from('contacts').insert([contactData]);
       if (error) throw error;
       setContactStatus('success');
       setContactData({ name: '', email: '', phone: '', message: '' });
